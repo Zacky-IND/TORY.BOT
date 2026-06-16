@@ -7,7 +7,7 @@ import os
 
 # Membaca gambar logo secara aman
 try:
-    logo = Image.open("logo.jpg") # Sesuaikan dengan nama file gambar Anda di GitHub (misal: logo.jpg / logo.png)
+    logo = Image.open("logo.jpg") 
 except Exception as e:
     logo = None
 
@@ -117,14 +117,14 @@ Panduan gaya:
 
 # ═══════════════════════════════════════════════════════════════
 
-# 3. MENGHITUNG POSISI INPUT SECARA DINAMIS (Untuk PC)
+# Posisi dinamis input chat khusus layar PC desktop
 posisi_kiri_input = "58%" if st.session_state.sidebar_open else "50%"
 
-# ── CSS: Light clean theme + RESPONSIVE SCREEN ──────────────────
+# ── CSS: RESPONSIVE UNTUK PC, TABLET, DAN HP ────────────────────
 st.markdown(f"""
 <style>
 
-/* ─── Global ─────────────────────────────────────────── */
+/* ─── Global Layout ──────────────────────────────────── */
 .stApp {{ background-color: #ffffff; }}
 .main .block-container {{
     max-width: 860px;
@@ -133,25 +133,25 @@ st.markdown(f"""
     margin: 0 auto;
 }}
 
-/* ─── Sidebar ────────────────────────────────────────── */
+/* ─── Sidebar Style ──────────────────────────────────── */
 [data-testid="stSidebar"] {{
     background-color: #f0f2f6;
     border-right: 1px solid #e2e4e8;
 }}
 [data-testid="stSidebar"] * {{ color: #31333f !important; }}
 
-/* ─── Hide Streamlit chrome ──────────────────────────── */
+/* ─── Sembunyikan Menu Bawaan ────────────────────────── */
 #MainMenu, footer {{ visibility: hidden; }}
 [data-testid="stHeader"] {{ background-color: transparent !important; }}
 
-/* ─── Chat input fixed bottom (RESPONSIVE) ───────────── */
+/* ─── Chat Input Utama (Menggunakan Media Queries) ───── */
 [data-testid="stChatInput"] {{
     position: fixed;
     bottom: 20px;
     z-index: 1000;
 }}
 
-/* Jika layar lebar (PC / Laptop) */
+/* POV Layar PC / Laptop Besar */
 @media (min-width: 992px) {{
     [data-testid="stChatInput"] {{
         width: min(820px, 60%);
@@ -160,21 +160,21 @@ st.markdown(f"""
     }}
 }}
 
-/* Jika layar sedang (Tablet) */
+/* POV Layar Tablet */
 @media (min-width: 768px) and (max-width: 991px) {{
     [data-testid="stChatInput"] {{
-        width: 80%;
-        left: 50%;
-        transform: translateX(-50%);
+        width: 80% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
     }}
 }}
 
-/* Jika layar kecil (HP) */
+/* POV Layar HP (Sangat Kecil) - Ini yang memperbaiki error gambar Anda */
 @media (max-width: 767px) {{
     [data-testid="stChatInput"] {{
-        width: 90%;
-        left: 50%;
-        transform: translateX(-50%);
+        width: 92% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
     }}
 }}
 
@@ -187,12 +187,12 @@ st.markdown(f"""
     font-size: 15px !important;
 }}
 
-/* ─── Hide avatars ───────────────────────────────────── */
+/* ─── Sembunyikan Avatar default ─────────────────────── */
 [data-testid="stChatMessageAvatarUser"],
 [data-testid="stChatMessageAvatarAssistant"],
 [data-testid^="stChatMessageAvatar"] {{ display: none !important; }}
 
-/* ─── User bubble ────────────────────────────────────── */
+/* ─── Balon Chat User ────────────────────────────────── */
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {{
     background-color: #f0f2f6;
     border-radius: 12px;
@@ -200,14 +200,14 @@ st.markdown(f"""
     margin: 8px 0;
 }}
 
-/* ─── Assistant bubble ───────────────────────────────── */
+/* ─── Balon Chat Bot ─────────────────────────────────── */
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {{
     background-color: #ffffff;
     padding: 14px 0;
     margin: 8px 0;
 }}
 
-/* ─── Buttons ────────────────────────────────────────── */
+/* ─── Pengaturan Tombol & Selectbox ──────────────────── */
 .stButton > button {{
     background-color: #ffffff;
     border: 1px solid #e0e2e6;
@@ -227,19 +227,15 @@ button[kind="primary"] {{
     font-weight: 600 !important;
     color: #1a1a2e !important;
 }}
-
-/* ─── Selectbox ──────────────────────────────────────── */
 [data-testid="stSelectbox"] > div > div {{
     background-color: #ffffff !important;
     border: 1px solid #cccccc !important;
     border-radius: 8px !important;
     color: #31333f !important;
 }}
-
-/* ─── Divider ────────────────────────────────────────── */
 hr {{ border-color: #e2e4e8 !important; }}
 
-/* ─── Welcome screen ─────────────────────────────────── */
+/* ─── Welcome Screen Menu Utama ──────────────────────── */
 .tory-welcome {{
     display: flex;
     flex-direction: column;
@@ -261,24 +257,22 @@ hr {{ border-color: #e2e4e8 !important; }}
     box-shadow: 0 4px 14px rgba(255,107,53,0.25);
 }}
 .tory-title {{
-    font-size: 40px;
+    font-size: 32px;
     font-weight: 700;
     color: #1a1a2e;
     letter-spacing: -0.5px;
     margin: 0 0 8px 0;
 }}
 .tory-sub {{
-    font-size: 16px;
+    font-size: 15px;
     color: #888;
     margin: 0;
+    padding: 0 10px;
 }}
-
-/* ─── Markdown text ──────────────────────────────────── */
 .stMarkdown p, .stMarkdown li,
 .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {{
     color: #31333f !important;
 }}
-
 </style>
 """, unsafe_allow_html=True)
 
