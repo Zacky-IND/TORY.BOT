@@ -117,19 +117,20 @@ Panduan gaya:
 
 # ═══════════════════════════════════════════════════════════════
 
-# Posisi dinamis input chat khusus layar PC desktop
 posisi_kiri_input = "58%" if st.session_state.sidebar_open else "50%"
 
-# ── CSS: RESPONSIVE UNTUK PC, TABLET, DAN HP ────────────────────
+# ── CSS: SUPER RESPONSIVE & CLEAN UNTUK MOBILE ──────────────────
 st.markdown(f"""
 <style>
 
 /* ─── Global Layout ──────────────────────────────────── */
-.stApp {{ background-color: #ffffff; }}
+.stApp {{ 
+    background-color: #ffffff; 
+}}
 .main .block-container {{
-    max-width: 860px;
-    padding-top: 1.5rem;
-    padding-bottom: 8rem;
+    max-width: 800px;
+    padding-top: 2rem;
+    padding-bottom: 10rem; /* Ditambah agar chat paling bawah tidak tertutup input */
     margin: 0 auto;
 }}
 
@@ -144,47 +145,72 @@ st.markdown(f"""
 #MainMenu, footer {{ visibility: hidden; }}
 [data-testid="stHeader"] {{ background-color: transparent !important; }}
 
-/* ─── Chat Input Utama (Menggunakan Media Queries) ───── */
+/* ─── Chat Input Master Base ─────────────────────────── */
 [data-testid="stChatInput"] {{
     position: fixed;
-    bottom: 20px;
     z-index: 1000;
+    background-color: transparent !important;
 }}
 
-/* POV Layar PC / Laptop Besar */
-@media (min-width: 992px) {{
+/* 📱 KHUSUS LAYAR HP (Perbaikan Utama untuk Gambar Anda) */
+@media (max-width: 767px) {{
+    .main .block-container {{
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-top: 1rem;
+    }}
     [data-testid="stChatInput"] {{
-        width: min(820px, 60%);
-        left: {posisi_kiri_input}; 
-        transform: translateX(-50%);
+        width: 90% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        bottom: 30px !important; /* Diberi jarak aman dari navigasi bawah HP */
+    }}
+    .tory-welcome {{
+        margin-top: 5vh !important; /* Menaikkan logo sedikit di HP agar proporsional */
+    }}
+    .tory-title {{
+        font-size: 26px !important;
+    }}
+    .tory-sub {{
+        font-size: 14px !important;
     }}
 }}
 
-/* POV Layar Tablet */
+/* 📑 LAYAR TABLET */
 @media (min-width: 768px) and (max-width: 991px) {{
     [data-testid="stChatInput"] {{
         width: 80% !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
+        bottom: 25px !important;
     }}
 }}
 
-/* POV Layar HP (Sangat Kecil) - Ini yang memperbaiki error gambar Anda */
-@media (max-width: 767px) {{
+/* 💻 LAYAR PC / LAPTOP */
+@media (min-width: 992px) {{
     [data-testid="stChatInput"] {{
-        width: 92% !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
+        width: min(760px, 55%);
+        left: {posisi_kiri_input}; 
+        transform: translateX(-50%);
+        bottom: 25px;
     }}
 }}
 
+/* ─── Desain Kotak Teks Input & Placeholder ─────────── */
 [data-testid="stChatInput"] textarea {{
-    background-color: #ffffff !important;
+    background-color: #f7f9fc !important;
     color: #31333f !important;
-    border: 1px solid #cccccc !important;
-    border-radius: 10px !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
     font-size: 15px !important;
+    padding: 12px !important;
+}}
+
+/* Memperjelas warna teks petunjuk di dalam kotak input */
+[data-testid="stChatInput"] textarea::placeholder {{
+    color: #718096 !important;
+    opacity: 1 !important;
 }}
 
 /* ─── Sembunyikan Avatar default ─────────────────────── */
@@ -195,19 +221,22 @@ st.markdown(f"""
 /* ─── Balon Chat User ────────────────────────────────── */
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {{
     background-color: #f0f2f6;
-    border-radius: 12px;
+    border-radius: 16px 16px 4px 16px;
     padding: 14px 18px;
-    margin: 8px 0;
+    margin: 12px 0;
+    max-width: 85%;
+    margin-left: auto; /* Balon user otomatis rata kanan */
 }}
 
 /* ─── Balon Chat Bot ─────────────────────────────────── */
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {{
     background-color: #ffffff;
-    padding: 14px 0;
-    margin: 8px 0;
+    padding: 14px 4px;
+    margin: 12px 0;
+    border-bottom: 1px solid #f0f2f6;
 }}
 
-/* ─── Pengaturan Tombol & Selectbox ──────────────────── */
+/* ─── UI Elemen Tambahan ────────────────────────────── */
 .stButton > button {{
     background-color: #ffffff;
     border: 1px solid #e0e2e6;
@@ -235,39 +264,40 @@ button[kind="primary"] {{
 }}
 hr {{ border-color: #e2e4e8 !important; }}
 
-/* ─── Welcome Screen Menu Utama ──────────────────────── */
+/* ─── Welcome Screen ────────────────────────────────── */
 .tory-welcome {{
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-top: 10vh;
-    gap: 2px;
+    margin-top: 8vh;
+    gap: 6px;
 }}
 .tory-icon-wrap {{
     background-color: #ff6b35;
-    border-radius: 20px;
-    width: 72px;
-    height: 72px;
+    border-radius: 22px;
+    width: 76px;
+    height: 76px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
-    margin-bottom: 14px;
-    box-shadow: 0 4px 14px rgba(255,107,53,0.25);
+    font-size: 42px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 18px rgba(255,107,53,0.25);
 }}
 .tory-title {{
     font-size: 32px;
     font-weight: 700;
     color: #1a1a2e;
     letter-spacing: -0.5px;
-    margin: 0 0 8px 0;
+    margin: 0 0 4px 0;
 }}
 .tory-sub {{
-    font-size: 15px;
-    color: #888;
+    font-size: 16px;
+    color: #666;
     margin: 0;
-    padding: 0 10px;
+    padding: 0 20px;
+    line-height: 1.5;
 }}
 .stMarkdown p, .stMarkdown li,
 .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {{
