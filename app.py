@@ -5,11 +5,12 @@ from google.genai import types
 from PIL import Image
 import os
 
-# 🌟 PERUBAHAN DI SINI: Panggil langsung nama filenya tanpa ada tulisan "/content/..."
+# Membaca gambar logo secara aman
 try:
-    logo = Image.open("logo.jpg") # Sesuaikan "logo.jpg" dengan nama & ekstensi file Anda di GitHub
+    logo = Image.open("logo.jpg") # Sesuaikan dengan nama file gambar Anda di GitHub (misal: logo.jpg / logo.png)
 except Exception as e:
     logo = None
+
 # 1. MENYIAPAN MEMORI STATUS SIDEBAR
 if "sidebar_open" not in st.session_state:
     st.session_state.sidebar_open = True
@@ -116,12 +117,14 @@ Panduan gaya:
 
 # ═══════════════════════════════════════════════════════════════
 
-# 3. MENGHITUNG POSISI INPUT SECARA DINAMIS
+# 3. MENGHITUNG POSISI INPUT SECARA DINAMIS (Untuk PC)
 posisi_kiri_input = "58%" if st.session_state.sidebar_open else "50%"
 
-# ── CSS: Light clean theme ─────────────────────────────────────
+# ── CSS: Light clean theme + RESPONSIVE SCREEN ──────────────────
 st.markdown(f"""
 <style>
+
+/* ─── Global ─────────────────────────────────────────── */
 .stApp {{ background-color: #ffffff; }}
 .main .block-container {{
     max-width: 860px;
@@ -129,21 +132,52 @@ st.markdown(f"""
     padding-bottom: 8rem;
     margin: 0 auto;
 }}
+
+/* ─── Sidebar ────────────────────────────────────────── */
 [data-testid="stSidebar"] {{
     background-color: #f0f2f6;
     border-right: 1px solid #e2e4e8;
 }}
 [data-testid="stSidebar"] * {{ color: #31333f !important; }}
+
+/* ─── Hide Streamlit chrome ──────────────────────────── */
 #MainMenu, footer {{ visibility: hidden; }}
 [data-testid="stHeader"] {{ background-color: transparent !important; }}
+
+/* ─── Chat input fixed bottom (RESPONSIVE) ───────────── */
 [data-testid="stChatInput"] {{
     position: fixed;
     bottom: 20px;
-    width: min(820px, 60%);
-    left: {posisi_kiri_input}; 
-    transform: translateX(-50%);
     z-index: 1000;
 }}
+
+/* Jika layar lebar (PC / Laptop) */
+@media (min-width: 992px) {{
+    [data-testid="stChatInput"] {{
+        width: min(820px, 60%);
+        left: {posisi_kiri_input}; 
+        transform: translateX(-50%);
+    }}
+}}
+
+/* Jika layar sedang (Tablet) */
+@media (min-width: 768px) and (max-width: 991px) {{
+    [data-testid="stChatInput"] {{
+        width: 80%;
+        left: 50%;
+        transform: translateX(-50%);
+    }}
+}}
+
+/* Jika layar kecil (HP) */
+@media (max-width: 767px) {{
+    [data-testid="stChatInput"] {{
+        width: 90%;
+        left: 50%;
+        transform: translateX(-50%);
+    }}
+}}
+
 [data-testid="stChatInput"] textarea {{
     background-color: #ffffff !important;
     color: #31333f !important;
@@ -152,20 +186,28 @@ st.markdown(f"""
     box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important;
     font-size: 15px !important;
 }}
+
+/* ─── Hide avatars ───────────────────────────────────── */
 [data-testid="stChatMessageAvatarUser"],
 [data-testid="stChatMessageAvatarAssistant"],
 [data-testid^="stChatMessageAvatar"] {{ display: none !important; }}
+
+/* ─── User bubble ────────────────────────────────────── */
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {{
     background-color: #f0f2f6;
     border-radius: 12px;
     padding: 14px 18px;
     margin: 8px 0;
 }}
+
+/* ─── Assistant bubble ───────────────────────────────── */
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {{
     background-color: #ffffff;
     padding: 14px 0;
     margin: 8px 0;
 }}
+
+/* ─── Buttons ────────────────────────────────────────── */
 .stButton > button {{
     background-color: #ffffff;
     border: 1px solid #e0e2e6;
@@ -185,13 +227,19 @@ button[kind="primary"] {{
     font-weight: 600 !important;
     color: #1a1a2e !important;
 }}
+
+/* ─── Selectbox ──────────────────────────────────────── */
 [data-testid="stSelectbox"] > div > div {{
     background-color: #ffffff !important;
     border: 1px solid #cccccc !important;
     border-radius: 8px !important;
     color: #31333f !important;
 }}
+
+/* ─── Divider ────────────────────────────────────────── */
 hr {{ border-color: #e2e4e8 !important; }}
+
+/* ─── Welcome screen ─────────────────────────────────── */
 .tory-welcome {{
     display: flex;
     flex-direction: column;
@@ -224,10 +272,13 @@ hr {{ border-color: #e2e4e8 !important; }}
     color: #888;
     margin: 0;
 }}
+
+/* ─── Markdown text ──────────────────────────────────── */
 .stMarkdown p, .stMarkdown li,
 .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {{
     color: #31333f !important;
 }}
+
 </style>
 """, unsafe_allow_html=True)
 
