@@ -1,19 +1,20 @@
-
 import re
 import streamlit as st
-from pyngrok import ngrok
 from google import genai
 from google.genai import types
 from PIL import Image
 import os
 
-logo = Image.open("/content/0cdd01ca00eaf0007f3cb2b237ec55c3.jpg")
-
-# 1. MENYIAPAN MEMORI STATUS SIDEBAR (Wajib ditaruh sebelum st.set_page_config)
+# 🌟 PERUBAHAN DI SINI: Panggil langsung nama filenya tanpa ada tulisan "/content/..."
+try:
+    logo = Image.open("logo.jpg") # Sesuaikan "logo.jpg" dengan nama & ekstensi file Anda di GitHub
+except Exception as e:
+    logo = None
+# 1. MENYIAPAN MEMORI STATUS SIDEBAR
 if "sidebar_open" not in st.session_state:
     st.session_state.sidebar_open = True
 
-# 2. ATUR KONFIGURASI HALAMAN (Membaca status memori untuk membuka/menutup)
+# 2. ATUR KONFIGURASI HALAMAN
 st.set_page_config(
     page_title="Tory Bot",
     page_icon=logo,
@@ -23,7 +24,7 @@ st.set_page_config(
 
 API_KEY = os.getenv("GEMINI_API_KEY")
 if not API_KEY:
-    st.error("⚠️ Environment variable GEMINI_API_KEY belum ditemukan.")
+    st.error("⚠️ Environment variable GEMINI_API_KEY belum ditemukan di Advanced Settings.")
     st.stop()
 
 client = genai.Client(api_key=API_KEY)
@@ -116,14 +117,11 @@ Panduan gaya:
 # ═══════════════════════════════════════════════════════════════
 
 # 3. MENGHITUNG POSISI INPUT SECARA DINAMIS
-# Jika sidebar aktif terbuka (expanded) = posisi 58% (agak kanan). Jika tertutup (collapsed) = posisi 50% (tengah).
 posisi_kiri_input = "58%" if st.session_state.sidebar_open else "50%"
 
 # ── CSS: Light clean theme ─────────────────────────────────────
 st.markdown(f"""
 <style>
-
-/* ─── Global ─────────────────────────────────────────── */
 .stApp {{ background-color: #ffffff; }}
 .main .block-container {{
     max-width: 860px;
@@ -131,19 +129,13 @@ st.markdown(f"""
     padding-bottom: 8rem;
     margin: 0 auto;
 }}
-
-/* ─── Sidebar ────────────────────────────────────────── */
 [data-testid="stSidebar"] {{
     background-color: #f0f2f6;
     border-right: 1px solid #e2e4e8;
 }}
 [data-testid="stSidebar"] * {{ color: #31333f !important; }}
-
-/* ─── Hide Streamlit chrome (Menu & Footer saja yang disembunyikan) ─── */
 #MainMenu, footer {{ visibility: hidden; }}
 [data-testid="stHeader"] {{ background-color: transparent !important; }}
-
-/* ─── Chat input fixed bottom ────────────────────────── */
 [data-testid="stChatInput"] {{
     position: fixed;
     bottom: 20px;
@@ -160,28 +152,20 @@ st.markdown(f"""
     box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important;
     font-size: 15px !important;
 }}
-
-/* ─── Hide avatars ───────────────────────────────────── */
 [data-testid="stChatMessageAvatarUser"],
 [data-testid="stChatMessageAvatarAssistant"],
 [data-testid^="stChatMessageAvatar"] {{ display: none !important; }}
-
-/* ─── User bubble ────────────────────────────────────── */
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {{
     background-color: #f0f2f6;
     border-radius: 12px;
     padding: 14px 18px;
     margin: 8px 0;
 }}
-
-/* ─── Assistant bubble ───────────────────────────────── */
 [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {{
     background-color: #ffffff;
     padding: 14px 0;
     margin: 8px 0;
 }}
-
-/* ─── Buttons ────────────────────────────────────────── */
 .stButton > button {{
     background-color: #ffffff;
     border: 1px solid #e0e2e6;
@@ -201,19 +185,13 @@ button[kind="primary"] {{
     font-weight: 600 !important;
     color: #1a1a2e !important;
 }}
-
-/* ─── Selectbox ──────────────────────────────────────── */
 [data-testid="stSelectbox"] > div > div {{
     background-color: #ffffff !important;
     border: 1px solid #cccccc !important;
     border-radius: 8px !important;
     color: #31333f !important;
 }}
-
-/* ─── Divider ────────────────────────────────────────── */
 hr {{ border-color: #e2e4e8 !important; }}
-
-/* ─── Welcome screen ─────────────────────────────────── */
 .tory-welcome {{
     display: flex;
     flex-direction: column;
@@ -246,13 +224,10 @@ hr {{ border-color: #e2e4e8 !important; }}
     color: #888;
     margin: 0;
 }}
-
-/* ─── Markdown text ──────────────────────────────────── */
 .stMarkdown p, .stMarkdown li,
 .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {{
     color: #31333f !important;
 }}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -261,7 +236,8 @@ hr {{ border-color: #e2e4e8 !important; }}
 with st.sidebar:
     col_img, col_name = st.columns([1, 3])
     with col_img:
-        st.image(logo, width=44)
+        if logo:
+            st.image(logo, width=44)
     with col_name:
         st.markdown(
             "<h3 style='margin:6px 0 0 0; color:#1a1a2e; font-size:20px;'>Tory Bot</h3>",
